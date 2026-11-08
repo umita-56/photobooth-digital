@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Galeri{% endblock %}
+{% block content %}
+<section class="gallery-page">
+  <div class="section-heading">
+    <span class="eyebrow">✦ ALL THE LITTLE THINGS ✦</span>
+    <h1>Memory gallery <span class="pink-heart">♡</span></h1>
+    <p>Semua photostrip yang sudah dibuat dan tersimpan di database.</p>
+  </div>
+
+  <!-- Fitur baru: cari memory dan filter berdasarkan tema frame. -->
+  <form class="gallery-filter" action="{{ url_for('gallery') }}" method="get">
+    <div class="gallery-search-field">
+      <label for="gallery-q">Cari memory</label>
+      <input id="gallery-q" type="search" name="q" maxlength="60"
+             value="{{ keyword }}" placeholder="Masukkan nama atau caption...">
+    </div>
+    <div class="gallery-theme-field">
+      <label for="gallery-frame">Tema frame</label>
+      <select id="gallery-frame" name="frame">
+        <option value="">Semua tema</option>
+        <option value="pink" {% if selected_frame == 'pink' %}selected{% endif %}>Strawberry Milk</option>
+        <option value="lavender" {% if selected_frame == 'lavender' %}selected{% endif %}>Lavender Dream</option>
+        <option value="mint" {% if selected_frame == 'mint' %}selected{% endif %}>Mint Choco</option>
+      </select>
+    </div>
+    <button class="gallery-filter-button" type="submit">Cari memory ♡</button>
+    {% if has_filter %}
+      <a class="gallery-reset-button" href="{{ url_for('gallery') }}">Reset filter</a>
+    {% endif %}
+  </form>
+  <p class="gallery-result-count">Menampilkan <strong>{{ result_count }}</strong> memory</p>
+
+  {% if items %}
+  <div class="gallery-grid">
+    {% for item in items %}
+    <a class="gallery-card" href="{{ url_for('result', session_id=item.id) }}">
+      <div class="gallery-image"><img src="{{ url_for('static', filename='hasil/' + item.result_file) }}" alt="Photostrip {{ item.guest_name }}"></div>
+      <div class="gallery-meta">
+        <div><strong>{{ item.guest_name }}</strong><p>{{ item.caption }}</p></div>
+        <span class="gallery-arrow">↗</span>
+      </div>
+      <small>{{ item.created_at.strftime('%d %b %Y · %H:%M') if item.created_at else '' }}</small>
+    </a>
+    {% endfor %}
+  </div>
+  {% elif has_filter %}
+  <div class="empty-state">
+    <div>♡</div><h2>Memory tidak ditemukan</h2>
+    <p>Coba gunakan kata kunci atau tema frame yang berbeda.</p>
+    <a class="primary-button" href="{{ url_for('gallery') }}">Tampilkan semua memory</a>
+  </div>
+  {% else %}
+  <div class="empty-state"><div>♡</div><h2>Belum ada memory</h2><p>Photostrip pertamamu akan muncul di sini.</p><a class="primary-button" href="{{ url_for('index') }}">Buat photostrip <span>♡</span></a></div>
+  {% endif %}
+</section>
+{% endblock %}

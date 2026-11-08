@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Cute Photobooth{% endblock %} ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-icon">♡</span> littlebooth</a>
+    <div class="nav-links">
+      {% if session.get('user_id') %}
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('gallery') }}">Galeri <span class="nav-sparkle">✦</span></a>
+        <span class="nav-welcome">Hi, {{ session.get('full_name', 'friend') }} ♡</span>
+        <form class="nav-logout" action="{{ url_for('logout') }}" method="post"><button type="submit">Logout</button></form>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Daftar</a>
+      {% endif %}
+    </div>
+  </nav>
+  <main class="page-wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>made with ♡ for your little happy moments</footer>
+</body>
+</html>

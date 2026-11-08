@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Your photostrip{% endblock %}
+{% block content %}
+<section class="result-page">
+  <div class="section-heading">
+    <span class="eyebrow">✿ IT'S A MEMORY!</span>
+    <h1>Your little memory is ready <span class="pink-heart">♡</span></h1>
+    <p>Looking cute, {{ item.guest_name }}! Simpan hasilnya atau buat lagi.</p>
+  </div>
+  <div class="result-layout">
+    <div class="result-preview">
+      <img src="{{ url_for('static', filename='hasil/' + item.result_file) }}" alt="Photostrip hasil {{ item.guest_name }}">
+    </div>
+    <div class="result-info">
+      <div class="info-chip">✦ MADE JUST FOR YOU</div>
+      <h2>{{ item.guest_name }}'s<br>photostrip</h2>
+      <p class="result-caption">“{{ item.caption }}”</p>
+      <div class="detail-row"><span>Frame</span><strong>{{ item.frame_name }}</strong></div>
+      <div class="detail-row"><span>Dibuat</span><strong>{{ item.created_at.strftime('%d %b %Y, %H:%M') if item.created_at else 'Baru saja' }}</strong></div>
+      <a class="primary-button download-button" href="{{ url_for('download', filename=item.result_file) }}">Unduh photostrip <span>↓</span></a>
+      <a class="secondary-button" href="{{ url_for('index') }}">← Buat photostrip lagi</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

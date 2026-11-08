@@ -1,0 +1,144 @@
+  {% extends "base.html" %}
+  {% block title %}Home{% endblock %}
+  {% block content %}
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span>✿</span> YOUR TINY HAPPY PLACE</div>
+      <h1>Make a little<br><span>memory</span> with me ♡</h1>
+      <p>Upload your favorite photo, pick a dreamy pastel frame, and keep a tiny piece of today.</p>
+      <a class="text-link" href="#studio">Let's make memories <span>↓</span></a>
+      <div class="hero-doodles"><span>♡</span><span>✦</span><span>✿</span></div>
+    </div>
+    <div class="hero-art">
+      <div class="sticker sticker-top">so cute! ✦</div>
+      <div class="mock-strip">
+        <div class="mock-head">♡ little moments ♡</div>
+        <div class="mock-photo photo-one"><span>✿</span></div>
+        <div class="mock-photo photo-two"><span>♡</span></div>
+        <div class="mock-photo photo-three"><span>✦</span></div>
+        <div class="mock-foot">a day to remember</div>
+      </div>
+      <div class="sticker sticker-bottom">smile today ☺</div>
+      <div class="floating-heart">♥</div>
+    </div>
+  </section>
+
+  <section id="studio" class="studio-section">
+    <div class="section-heading">
+      <span class="eyebrow">✦ THE PHOTO STUDIO ✦</span>
+      <h2>Let's create your photostrip</h2>
+      <p>Isi detail kecilnya, upload foto, lalu pilih warna favoritmu.</p>
+    </div>
+    <form class="studio-card" action="{{ url_for('create') }}" method="post" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-left">
+          <label for="guest_name">Nama kamu <span>♡</span></label>
+          <input id="guest_name" name="guest_name" maxlength="60" placeholder="your name" required>
+          <label for="caption">Caption kecil <span>✦</span></label>
+          <input id="caption" name="caption" maxlength="45" placeholder="my cute day" value="my cute day">
+          <label>Pick your vibe <span>✿</span></label>
+          <div class="theme-options">
+            <label class="theme-option">
+              <input type="radio" name="frame_style" value="pink" checked>
+              <span class="swatch pink"></span><span>Strawberry<br><small>soft pink</small></span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="frame_style" value="lavender">
+              <span class="swatch lavender"></span><span>Lavender<br><small>dreamy lilac</small></span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="frame_style" value="mint">
+              <span class="swatch mint"></span><span>Mint Choco<br><small>fresh green</small></span>
+            </label>
+          </div>
+        </div>
+          
+
+        <div class="upload-side">
+          <label for="photo">Upload your photos <span>♡</span></label>
+        
+          <label class="upload-box" for="photo">
+            <div class="upload-symbol">＋</div>
+            <strong id="upload-title">Pilih 1–4 foto kamu</strong>
+            <span id="upload-subtitle">Klik untuk memilih beberapa foto ♡</span>
+            <small>JPG, PNG, WEBP · maksimal 10 MB per file</small>
+            <div id="photo-previews"></div>
+          </label>
+        
+          <input
+            class="file-input"
+            id="photo"
+            type="file"
+            name="photos"
+            accept=".jpg,.jpeg,.png,.webp,image/*"
+            multiple
+            required
+          >
+        
+          <label for="photo_shape" style="margin-top: 20px;">
+            Bentuk frame foto <span>✦</span>
+          </label>
+        
+          <select name="photo_shape" id="photo_shape" required>
+            <option value="square">Persegi</option>
+            <option value="rounded" selected>Sudut membulat</option>
+            <option value="polaroid">Polaroid</option>
+          </select>
+        </div>
+      </div>
+      <button class="primary-button" type="submit">Buat photostrip <span>♡</span></button>
+      <p class="privacy-note">✿ Foto diproses di aplikasi lokal ini untuk membuat photostrip.</p>
+    </form>
+  </section>
+
+  {% if recent %}
+  <section class="recent-section">
+    <div class="section-heading compact">
+      <span class="eyebrow">✧ LITTLE GALLERY</span>
+      <h2>Freshly made memories</h2>
+    </div>
+    <div class="recent-grid">
+      {% for item in recent %}
+      <a class="recent-card" href="{{ url_for('result', session_id=item.id) }}">
+        <img src="{{ url_for('static', filename='hasil/' + item.result_file) }}" alt="Photostrip {{ item.guest_name }}">
+        <div><strong>{{ item.guest_name }}</strong><span>{{ item.caption }}</span></div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+    <script>
+      const input = document.getElementById('photo');
+      const title = document.getElementById('upload-title');
+      const subtitle = document.getElementById('upload-subtitle');
+      const previews = document.getElementById('photo-previews');
+      
+      input.addEventListener('change', () => {
+        const files = Array.from(input.files || []);
+      
+        title.textContent = files.length
+          ? files.length + ' foto dipilih ♡'
+          : 'Pilih 1–4 foto kamu';
+      
+        subtitle.textContent = files.length
+          ? files.map(file => file.name).join(', ')
+          : 'Klik untuk memilih beberapa foto ♡';
+      
+        previews.innerHTML = '';
+      
+        files.slice(0, 4).forEach(file => {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          img.alt = 'Preview foto';
+          img.style.width = '65px';
+          img.style.height = '65px';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '10px';
+          img.style.margin = '5px';
+          previews.appendChild(img);
+        });
+      });
+    </script>
+    
+  {% endblock %}
